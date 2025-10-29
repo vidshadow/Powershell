@@ -9,6 +9,7 @@ Complete solution for upgrading to Windows 11 and removing bloatware.
 
 **Features:**
 - Windows 11 compatibility checking (TPM 2.0, Secure Boot, RAM, Storage)
+- **Bypass option for older hardware** - install Windows 11 without TPM 2.0 or Secure Boot
 - Automatic system restore point creation
 - Downloads official Windows 11 Installation Assistant
 - Removes 50+ bloatware apps including:
@@ -82,6 +83,17 @@ Or use the standalone script:
 
 ### Advanced Options
 
+**Bypass TPM 2.0 and Secure Boot requirements (for older hardware):**
+```powershell
+.\Upgrade-To-Windows11-Debloated.ps1 -BypassRequirements
+```
+This applies registry modifications to bypass:
+- TPM 2.0 requirement
+- Secure Boot requirement
+- RAM minimum (4GB)
+- Storage minimum (64GB)
+- CPU compatibility check
+
 **Skip compatibility check:**
 ```powershell
 .\Upgrade-To-Windows11-Debloated.ps1 -SkipCompatibilityCheck
@@ -94,7 +106,7 @@ Or use the standalone script:
 
 **Combine options:**
 ```powershell
-.\Upgrade-To-Windows11-Debloated.ps1 -SkipUpgrade -NoRestorePoint
+.\Upgrade-To-Windows11-Debloated.ps1 -BypassRequirements -NoRestorePoint
 ```
 
 ## What Gets Removed
@@ -151,23 +163,39 @@ The scripts **DO NOT** remove:
 
 ## Troubleshooting
 
-### TPM 2.0 Not Detected
-1. **Enable in BIOS/UEFI**:
-   - Restart computer
-   - Enter BIOS/UEFI (usually Del, F2, or F12 during boot)
-   - Look for "TPM", "Security Device", or "PTT" (Intel Platform Trust Technology)
-   - Enable and save changes
+### TPM 2.0 Not Detected or Secure Boot Not Supported
 
-2. **Check TPM status**:
-   ```powershell
-   Get-WmiObject -Namespace "Root\CIMv2\Security\MicrosoftTpm" -Class Win32_Tpm
-   ```
+**Option 1: Enable in BIOS/UEFI (Recommended)**
+1. Restart computer
+2. Enter BIOS/UEFI (usually Del, F2, or F12 during boot)
+3. Look for "TPM", "Security Device", or "PTT" (Intel Platform Trust Technology)
+4. Enable TPM and Secure Boot
+5. Save and restart
 
-### Secure Boot Not Enabled
-1. Enter BIOS/UEFI settings
-2. Find "Secure Boot" option (usually under "Boot" or "Security")
-3. Enable Secure Boot
-4. Save and restart
+**Option 2: Bypass Requirements (for older hardware)**
+
+If your hardware doesn't support TPM 2.0 or Secure Boot, use the bypass option:
+
+```powershell
+.\Upgrade-To-Windows11-Debloated.ps1 -BypassRequirements
+```
+
+This applies registry modifications that allow Windows 11 installation on unsupported hardware by bypassing:
+- TPM 2.0 check
+- Secure Boot check
+- RAM check
+- Storage check
+- CPU compatibility check
+
+**Note**: While this works for most systems, be aware that:
+- Future Windows updates may have issues on unsupported hardware
+- Some security features may not be available
+- Microsoft recommends TPM 2.0 for full security features
+
+**Check TPM status manually**:
+```powershell
+Get-WmiObject -Namespace "Root\CIMv2\Security\MicrosoftTpm" -Class Win32_Tpm
+```
 
 ### Script Execution Policy Error
 ```powershell

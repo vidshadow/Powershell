@@ -22,6 +22,10 @@
 .EXAMPLE
     .\Upgrade-To-Windows11-Debloated.ps1 -SkipUpgrade
     (Only performs debloating on existing Windows 11 installation)
+
+.EXAMPLE
+    .\Upgrade-To-Windows11-Debloated.ps1 -BypassRequirements
+    (Bypasses TPM 2.0, Secure Boot, RAM, Storage, and CPU requirements for upgrade)
 #>
 
 [CmdletBinding()]
@@ -33,7 +37,10 @@ param(
     [switch]$SkipCompatibilityCheck,
 
     [Parameter(Mandatory=$false)]
-    [switch]$NoRestorePoint
+    [switch]$NoRestorePoint,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$BypassRequirements
 )
 
 # Requires Administrator privileges
@@ -164,6 +171,61 @@ function New-SystemRestorePoint {
         Write-Log "System restore point created successfully" -Level Success
     } catch {
         Write-Log "Failed to create restore point: $($_.Exception.Message)" -Level Warning
+    }
+}
+
+# Bypass Windows 11 system requirements
+function Enable-Windows11BypassRegistry {
+    Write-Log "Applying registry modifications to bypass Windows 11 requirements..." -Level Info
+
+    try {
+        # Registry path for Windows 11 upgrade bypass
+        $registryPath = "HKLM:\SYSTEM\Setup\MoSetup"
+
+        # Create the registry key if it doesn't exist
+        if (-not (Test-Path $registryPath)) {
+            New-Item -Path $registryPath -Force | Out-Null
+            Write-Log "Created registry path: $registryPath" -Level Info
+        }
+
+        # Bypass TPM requirement
+        Set-ItemProperty -Path $registryPath -Name "AllowUpgradesWithUnsupportedTPMOrCPU" -Value 1 -Type DWord -Force
+        Write-Log "Bypassed TPM requirement" -Level Success
+
+        # Additional bypass registry keys for Windows 11 installation
+        $bypassPath = "HKLM:\SYSTEM\Setup\LabConfig"
+
+        if (-not (Test-Path $bypassPath)) {
+            New-Item -Path $bypassPath -Force | Out-Null
+            Write-Log "Created registry path: $bypassPath" -Level Info
+        }
+
+        # Bypass TPM 2.0 check
+        Set-ItemProperty -Path $bypassPath -Name "BypassTPMCheck" -Value 1 -Type DWord -Force
+        Write-Log "Set BypassTPMCheck = 1" -Level Info
+
+        # Bypass Secure Boot check
+        Set-ItemProperty -Path $bypassPath -Name "BypassSecureBootCheck" -Value 1 -Type DWord -Force
+        Write-Log "Set BypassSecureBootCheck = 1" -Level Info
+
+        # Bypass RAM check (4GB minimum)
+        Set-ItemProperty -Path $bypassPath -Name "BypassRAMCheck" -Value 1 -Type DWord -Force
+        Write-Log "Set BypassRAMCheck = 1" -Level Info
+
+        # Bypass storage check (64GB minimum)
+        Set-ItemProperty -Path $bypassPath -Name "BypassStorageCheck" -Value 1 -Type DWord -Force
+        Write-Log "Set BypassStorageCheck = 1" -Level Info
+
+        # Bypass CPU compatibility check
+        Set-ItemProperty -Path $bypassPath -Name "BypassCPUCheck" -Value 1 -Type DWord -Force
+        Write-Log "Set BypassCPUCheck = 1" -Level Info
+
+        Write-Log "Windows 11 requirement bypass enabled successfully!" -Level Success
+        Write-Log "Your system will now bypass TPM 2.0, Secure Boot, RAM, Storage, and CPU checks" -Level Success
+
+    } catch {
+        Write-Log "Failed to apply registry bypass: $($_.Exception.Message)" -Level Error
+        Write-Log "You may need to apply these manually" -Level Warning
     }
 }
 
@@ -521,6 +583,14 @@ function Start-UpgradeAndDebloat {
     # Create restore point
     if (-not $NoRestorePoint) {
         New-SystemRestorePoint
+    }
+
+    # Bypass Windows 11 requirements if requested
+    if ($BypassRequirements) {
+        Write-Log "=====================================" -Level Warning
+        Write-Log "BYPASSING WINDOWS 11 REQUIREMENTS" -Level Warning
+        Write-Log "=====================================" -Level Warning
+        Enable-Windows11BypassRegistry
     }
 
     # Download and run upgrade

@@ -212,9 +212,7 @@ function Remove-BloatwareApps {
         "Microsoft.Movies",
         "SpotifyAB.SpotifyMusic",
 
-        # Games
-        "Microsoft.MicrosoftSolitaireCollection",
-        "Microsoft.MicrosoftMahjong",
+        # Games (keeping Solitaire & Mahjong per user request)
         "king.com.CandyCrushSaga",
         "king.com.CandyCrushSodaSaga",
         "king.com.CandyCrushFriends",
@@ -283,6 +281,32 @@ function Remove-BloatwareApps {
     }
 
     Write-Log "Bloatware removal completed" -Level Success
+}
+
+# Install classic games (Minesweeper)
+function Install-ClassicGames {
+    Write-Log "Installing classic Microsoft games..." -Level Info
+
+    try {
+        # Check if winget is available
+        $winget = Get-Command winget -ErrorAction SilentlyContinue
+
+        if ($winget) {
+            # Install Microsoft Minesweeper using winget
+            Write-Log "Installing Microsoft Minesweeper from Microsoft Store..." -Level Info
+            winget install "Microsoft Minesweeper" --source msstore --accept-package-agreements --accept-source-agreements 2>$null
+            Write-Log "Minesweeper installation completed" -Level Success
+        } else {
+            Write-Log "Winget not available. Opening Microsoft Store page for Minesweeper..." -Level Warning
+            Write-Log "You can manually install Minesweeper from: ms-windows-store://pdp/?ProductId=9WZDNCRFHWCN" -Level Info
+
+            # Open the Store page for Minesweeper
+            Start-Process "ms-windows-store://pdp/?ProductId=9WZDNCRFHWCN" -ErrorAction SilentlyContinue
+        }
+    } catch {
+        Write-Log "Could not install Minesweeper: $($_.Exception.Message)" -Level Warning
+        Write-Log "You can manually install it from the Microsoft Store" -Level Info
+    }
 }
 
 # Disable Windows ads and suggestions
@@ -522,6 +546,7 @@ function Start-UpgradeAndDebloat {
     Write-Log "=====================================" -Level Info
 
     Remove-BloatwareApps
+    Install-ClassicGames
     Disable-WindowsAds
     Disable-Telemetry
     Optimize-Privacy

@@ -13,10 +13,11 @@ Complete solution for upgrading to Windows 11 and removing bloatware.
 - Downloads official Windows 11 Installation Assistant
 - Removes 50+ bloatware apps including:
   - Xbox apps and gaming overlays
-  - Pre-installed games (Solitaire, Candy Crush, etc.)
+  - Bloatware games (Candy Crush, etc.) - keeps Solitaire & Mahjong
   - Entertainment apps (Spotify, Netflix, etc.)
   - Social media apps
   - Unwanted Microsoft apps
+- Installs classic Microsoft Minesweeper from Store
 - Disables advertisements and suggestions in Start Menu
 - Disables telemetry and tracking
 - Optimizes privacy settings
@@ -100,7 +101,7 @@ Or use the standalone script:
 
 ### Apps & Games
 - Xbox apps (Xbox, Game Bar, Gaming Overlay)
-- Pre-installed games (Solitaire, Mahjong, Candy Crush)
+- Pre-installed games (Candy Crush and similar bloatware - keeps Solitaire & Mahjong)
 - Entertainment (Spotify, Music, Movies & TV)
 - Social media (Twitter, Facebook, Instagram, LinkedIn)
 - Microsoft bloatware (Your Phone, Tips, Feedback Hub, 3D Viewer, Mixed Reality)
@@ -136,7 +137,10 @@ The scripts **DO NOT** remove:
 - Calculator
 - Notepad
 - Snipping Tool
+- Solitaire & Mahjong (classic games preserved)
 - Essential system apps
+
+**Bonus**: The script automatically installs Microsoft Minesweeper from the Store!
 
 ## Safety Features
 

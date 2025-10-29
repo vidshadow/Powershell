@@ -1,6 +1,6 @@
 # Windows 11 Upgrade & Debloat Scripts
 
-PowerShell scripts to upgrade Windows 10 to Windows 11 and remove bloatware, advertisements, and telemetry.
+PowerShell scripts to upgrade Windows 10 to Windows 11, clean existing installations, and remove bloatware, advertisements, and telemetry.
 
 ## Scripts
 
@@ -25,7 +25,32 @@ Complete solution for upgrading to Windows 11 and removing bloatware.
 - Disables OneDrive
 - Comprehensive logging
 
-### 2. `Debloat-Windows11.ps1`
+### 2. `Reset-Windows11-Clean.ps1` ⭐ NEW
+Clean and reset your existing Windows 11 installation while preserving personal files and games.
+
+**Features:**
+- Removes bloatware apps and games (keeps Solitaire & Mahjong)
+- Installs Microsoft Minesweeper from Store
+- Disables advertisements, telemetry, and tracking
+- Optimizes privacy settings
+- Cleans temporary files and system cache
+- Repairs system files (DISM and SFC)
+- Creates system restore point
+
+**What's Preserved:**
+- ✅ All personal files (Documents, Downloads, Desktop, Pictures, Videos, Music)
+- ✅ Steam games and installation
+- ✅ Other game launchers (Epic, GOG, Battle.net, etc.)
+- ✅ Installed applications
+- ✅ User settings and configurations
+
+**Perfect for:**
+- Cleaning up an existing Windows 11 installation
+- Removing bloatware after updates reinstall it
+- System maintenance without losing data
+- Getting back to a clean state without reinstalling
+
+### 3. `Debloat-Windows11.ps1`
 Standalone debloating script for existing Windows 11 installations.
 
 ## Requirements
@@ -97,6 +122,43 @@ Or use the standalone script:
 
 ```powershell
 .\Debloat-Windows11.ps1
+```
+
+### Clean & Reset Existing Windows 11 ⭐ NEW
+
+For cleaning and resetting your current Windows 11 installation (preserves personal files and games):
+
+1. **Right-click PowerShell** and select "Run as Administrator"
+
+2. **Run the reset script**:
+   ```powershell
+   .\Reset-Windows11-Clean.ps1
+   ```
+
+3. **The script will**:
+   - Show all protected locations (your files, Steam games, etc.)
+   - Create a system restore point
+   - Remove bloatware and install Minesweeper
+   - Disable ads, telemetry, and tracking
+   - Clean temporary files and cache
+   - Repair system files with DISM and SFC
+   - Restart (optional)
+
+**Advanced Options:**
+
+Skip system restore point:
+```powershell
+.\Reset-Windows11-Clean.ps1 -NoRestorePoint
+```
+
+Skip system repair (faster but less thorough):
+```powershell
+.\Reset-Windows11-Clean.ps1 -SkipSystemRepair
+```
+
+Combine options:
+```powershell
+.\Reset-Windows11-Clean.ps1 -NoRestorePoint -SkipSystemRepair
 ```
 
 ### Advanced Options

@@ -1,20 +1,35 @@
 <#
 .SYNOPSIS
     Upgrades Windows 10 to Windows 11 and removes bloatware, ads, and unwanted features.
+    PRESERVES all personal files, installed programs, and game installations.
 
 .DESCRIPTION
     This script performs the following actions:
-    1. Checks Windows 11 compatibility (TPM 2.0, Secure Boot, CPU, RAM, Storage)
-    2. Creates a system restore point
-    3. Downloads and initiates Windows 11 upgrade
-    4. Removes pre-installed bloatware apps and games
-    5. Disables advertisements, telemetry, and unwanted features
-    6. Optimizes privacy settings
+    1. Displays what will be preserved (personal files, apps, games, settings)
+    2. Checks Windows 11 compatibility (TPM 2.0, Secure Boot, CPU, RAM, Storage)
+    3. Creates a system restore point for safety
+    4. Downloads and initiates Windows 11 upgrade (uses official Microsoft installer)
+    5. Removes pre-installed bloatware apps and games (after upgrade completes)
+    6. Disables advertisements, telemetry, and unwanted features
+    7. Optimizes privacy settings
+
+    DATA PRESERVATION:
+    ✓ All personal files (Documents, Downloads, Desktop, Pictures, Videos, Music)
+    ✓ Installed applications and programs
+    ✓ Game installations (Steam, Epic, GOG, Battle.net, etc.)
+    ✓ User settings and preferences
+    ✓ Browser bookmarks and history
+
+    WHAT GETS REMOVED:
+    • Bloatware apps (Xbox apps, Candy Crush, pre-installed OEM bloatware)
+    • OneDrive (can be reinstalled if needed)
+    • Telemetry and advertising services
 
 .NOTES
     Author: Claude
     Requires: PowerShell 5.1 or higher, Administrator privileges
     Tested on: Windows 10 21H2, 22H2
+    IMPORTANT: While this script preserves data, always backup important files before major upgrades
 
 .EXAMPLE
     .\Upgrade-To-Windows11-Debloated.ps1
@@ -576,12 +591,49 @@ function Disable-OneDrive {
     }
 }
 
+# Display data protection information
+function Show-DataProtectionInfo {
+    Write-Log "=====================================" -Level Success
+    Write-Log "DATA PROTECTION INFORMATION" -Level Success
+    Write-Log "=====================================" -Level Success
+    Write-Log "" -Level Info
+    Write-Log "The Windows 11 upgrade process preserves:" -Level Info
+    Write-Log "  ✓ All personal files (Documents, Downloads, Desktop, etc.)" -Level Success
+    Write-Log "  ✓ Installed applications and programs" -Level Success
+    Write-Log "  ✓ User settings and preferences" -Level Success
+    Write-Log "  ✓ Game installations (Steam, Epic, etc.)" -Level Success
+    Write-Log "  ✓ Browser bookmarks and history" -Level Success
+    Write-Log "" -Level Info
+    Write-Log "What this script removes:" -Level Warning
+    Write-Log "  • Bloatware apps (Xbox, Candy Crush, etc.)" -Level Warning
+    Write-Log "  • OneDrive (can be reinstalled if needed)" -Level Warning
+    Write-Log "  • Telemetry and advertising services" -Level Warning
+    Write-Log "" -Level Info
+    Write-Log "RECOMMENDED: Backup important data before major upgrades" -Level Warning
+    Write-Log "=====================================" -Level Info
+    Write-Log "" -Level Info
+
+    $confirm = Read-Host "Do you want to continue? (yes/no)"
+    if ($confirm -ne "yes") {
+        Write-Log "Upgrade cancelled by user" -Level Warning
+        return $false
+    }
+    return $true
+}
+
 # Main execution
 function Start-UpgradeAndDebloat {
     Write-Log "=====================================" -Level Info
     Write-Log "Windows 11 Upgrade & Debloat Script" -Level Info
     Write-Log "=====================================" -Level Info
     Write-Log "Log file: $LogFile" -Level Info
+
+    # Show data protection information
+    if (-not $SkipUpgrade) {
+        if (-not (Show-DataProtectionInfo)) {
+            return
+        }
+    }
 
     # Check compatibility
     if (-not $SkipUpgrade -and -not $SkipCompatibilityCheck) {

@@ -7,7 +7,15 @@ PowerShell scripts to upgrade Windows 10 to Windows 11, clean existing installat
 ### 1. `Upgrade-To-Windows11-Debloated.ps1`
 Complete solution for upgrading to Windows 11 and removing bloatware.
 
+**⚠️ DATA SAFETY:** This script preserves ALL your personal data:
+- ✅ Personal files (Documents, Downloads, Desktop, Pictures, Videos, Music)
+- ✅ Installed applications and programs
+- ✅ Game installations (Steam, Epic, GOG, Battle.net, etc.)
+- ✅ User settings and preferences
+- ✅ Browser bookmarks and history
+
 **Features:**
+- Shows data protection information before starting
 - Windows 11 compatibility checking (TPM 2.0, Secure Boot, RAM, Storage)
 - **Bypass option for older hardware** - install Windows 11 without TPM 2.0 or Secure Boot
 - Automatic system restore point creation
@@ -22,8 +30,10 @@ Complete solution for upgrading to Windows 11 and removing bloatware.
 - Disables advertisements and suggestions in Start Menu
 - Disables telemetry and tracking
 - Optimizes privacy settings
-- Disables OneDrive
+- Disables OneDrive (can be reinstalled if needed)
 - Comprehensive logging
+
+**What Gets Removed:** Only bloatware apps, OneDrive, and telemetry services - NO personal data!
 
 ### 2. `Reset-Windows11-Clean.ps1` ⭐ NEW
 Clean and reset your existing Windows 11 installation while preserving personal files and games.

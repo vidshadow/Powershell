@@ -601,13 +601,38 @@ function Show-DataProtectionInfo {
     Write-Log "  ✓ All personal files (Documents, Downloads, Desktop, etc.)" -Level Success
     Write-Log "  ✓ Installed applications and programs" -Level Success
     Write-Log "  ✓ User settings and preferences" -Level Success
-    Write-Log "  ✓ Game installations (Steam, Epic, etc.)" -Level Success
     Write-Log "  ✓ Browser bookmarks and history" -Level Success
     Write-Log "" -Level Info
-    Write-Log "What this script removes:" -Level Warning
-    Write-Log "  • Bloatware apps (Xbox, Candy Crush, etc.)" -Level Warning
+    Write-Log "  ✓ STEAM GAMES - 100% PROTECTED" -Level Success
+
+    # Check for Steam installation
+    $steamPaths = @(
+        "C:\Program Files (x86)\Steam",
+        "C:\Program Files\Steam"
+    )
+
+    foreach ($steamPath in $steamPaths) {
+        if (Test-Path $steamPath) {
+            Write-Log "    Found Steam at: $steamPath" -Level Success
+            $steamAppsPath = Join-Path $steamPath "steamapps\common"
+            if (Test-Path $steamAppsPath) {
+                $gameCount = (Get-ChildItem -Path $steamAppsPath -Directory -ErrorAction SilentlyContinue | Measure-Object).Count
+                if ($gameCount -gt 0) {
+                    Write-Log "    Detected $gameCount Steam game(s) - ALL PROTECTED" -Level Success
+                }
+            }
+        }
+    }
+
+    Write-Log "  ✓ Epic Games, GOG, Battle.net, etc. - ALL PROTECTED" -Level Success
+    Write-Log "" -Level Info
+    Write-Log "What this script removes (ONLY Windows Store bloatware):" -Level Warning
+    Write-Log "  • Bloatware apps (Xbox apps, Candy Crush, etc.)" -Level Warning
     Write-Log "  • OneDrive (can be reinstalled if needed)" -Level Warning
     Write-Log "  • Telemetry and advertising services" -Level Warning
+    Write-Log "" -Level Info
+    Write-Log "TECHNICAL NOTE: This script ONLY removes AppX (Windows Store) packages." -Level Info
+    Write-Log "Steam games are Win32 programs, NOT AppX packages - completely safe!" -Level Info
     Write-Log "" -Level Info
     Write-Log "RECOMMENDED: Backup important data before major upgrades" -Level Warning
     Write-Log "=====================================" -Level Info

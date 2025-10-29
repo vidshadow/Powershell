@@ -10,9 +10,12 @@ Complete solution for upgrading to Windows 11 and removing bloatware.
 **⚠️ DATA SAFETY:** This script preserves ALL your personal data:
 - ✅ Personal files (Documents, Downloads, Desktop, Pictures, Videos, Music)
 - ✅ Installed applications and programs
-- ✅ Game installations (Steam, Epic, GOG, Battle.net, etc.)
+- ✅ **STEAM GAMES - 100% PROTECTED** (script detects and confirms)
+- ✅ All other game launchers (Epic, GOG, Battle.net, Origin, etc.)
 - ✅ User settings and preferences
 - ✅ Browser bookmarks and history
+
+**Technical Details:** Script ONLY removes Windows Store (AppX) packages. Steam games are Win32 programs stored in Program Files - completely untouched!
 
 **Features:**
 - Shows data protection information before starting

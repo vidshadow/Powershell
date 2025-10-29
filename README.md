@@ -15,7 +15,14 @@ Complete solution for upgrading to Windows 11 and removing bloatware.
 - ✅ User settings and preferences
 - ✅ Browser bookmarks and history
 
-**Technical Details:** Script ONLY removes Windows Store (AppX) packages. Steam games are Win32 programs stored in Program Files - completely untouched!
+**What the Windows 11 Upgrade Process Does:**
+- ✅ Replaces Windows 10 system files with Windows 11 (preserves your data)
+- ✅ Creates Windows.old backup folder (10-20GB, can be deleted after 10 days)
+- ✅ Preserves ALL user files, programs, and games
+- ✅ Migrates settings and preferences
+- ⚠️ Requires 20GB+ free disk space (script checks this for you)
+
+**Technical Details:** Script ONLY removes Windows Store (AppX) packages. Steam games are Win32 programs stored in Program Files - completely untouched by both the upgrade process AND the debloat script!
 
 **Features:**
 - Shows data protection information before starting

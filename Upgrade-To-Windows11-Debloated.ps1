@@ -626,6 +626,12 @@ function Show-DataProtectionInfo {
 
     Write-Log "  ✓ Epic Games, GOG, Battle.net, etc. - ALL PROTECTED" -Level Success
     Write-Log "" -Level Info
+    Write-Log "What the Windows 11 upgrade process does:" -Level Info
+    Write-Log "  • Replaces Windows 10 system files with Windows 11" -Level Info
+    Write-Log "  • Creates Windows.old backup folder (10-20GB, can delete later)" -Level Info
+    Write-Log "  • Preserves ALL your files, programs, and games" -Level Success
+    Write-Log "  • Updates built-in Windows apps" -Level Info
+    Write-Log "" -Level Info
     Write-Log "What this script removes (ONLY Windows Store bloatware):" -Level Warning
     Write-Log "  • Bloatware apps (Xbox apps, Candy Crush, etc.)" -Level Warning
     Write-Log "  • OneDrive (can be reinstalled if needed)" -Level Warning
@@ -633,6 +639,19 @@ function Show-DataProtectionInfo {
     Write-Log "" -Level Info
     Write-Log "TECHNICAL NOTE: This script ONLY removes AppX (Windows Store) packages." -Level Info
     Write-Log "Steam games are Win32 programs, NOT AppX packages - completely safe!" -Level Info
+    Write-Log "" -Level Info
+
+    # Show disk space information
+    $systemDrive = Get-PSDrive -Name C
+    $freeSpace = [math]::Round($systemDrive.Free / 1GB, 2)
+    Write-Log "Disk Space Check:" -Level Info
+    Write-Log "  Free space on C: drive: $freeSpace GB" -Level Info
+    if ($freeSpace -lt 20) {
+        Write-Log "  WARNING: Low disk space! Upgrade needs 20GB+ free" -Level Warning
+        Write-Log "  Consider freeing up space before upgrading" -Level Warning
+    } else {
+        Write-Log "  Sufficient space for upgrade" -Level Success
+    }
     Write-Log "" -Level Info
     Write-Log "RECOMMENDED: Backup important data before major upgrades" -Level Warning
     Write-Log "=====================================" -Level Info

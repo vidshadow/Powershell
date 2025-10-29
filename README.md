@@ -48,6 +48,8 @@ Standalone debloating script for existing Windows 11 installations.
 
 ### Full Upgrade + Debloat
 
+**Step 1: Start the Windows 11 Upgrade**
+
 1. **Right-click PowerShell** and select "Run as Administrator"
 
 2. **Allow script execution** (if not already enabled):
@@ -60,12 +62,28 @@ Standalone debloating script for existing Windows 11 installations.
    .\Upgrade-To-Windows11-Debloated.ps1
    ```
 
-4. **Follow the prompts** - the script will:
+4. **The script will**:
    - Check system compatibility
    - Create a restore point
-   - Download Windows 11 installer
-   - Launch the upgrade process
-   - After upgrade, run debloating operations
+   - Apply registry bypass (if using `-BypassRequirements`)
+   - Download and launch Windows 11 installer
+   - Exit and wait for you to complete the upgrade
+
+5. **Complete the Windows 11 installation** - Follow the on-screen prompts through multiple reboots
+
+**Step 2: Debloat Your Fresh Windows 11 Installation**
+
+6. **After Windows 11 is fully installed**, run the script again:
+   ```powershell
+   .\Upgrade-To-Windows11-Debloated.ps1 -SkipUpgrade
+   ```
+
+7. **The script will now**:
+   - Remove all bloatware apps
+   - Install Minesweeper
+   - Disable ads and telemetry
+   - Optimize privacy settings
+   - Disable OneDrive
 
 ### Debloat Only (Already on Windows 11)
 

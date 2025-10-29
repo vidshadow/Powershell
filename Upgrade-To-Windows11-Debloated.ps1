@@ -463,10 +463,25 @@ function Disable-Telemetry {
 
     foreach ($task in $tasksToDisable) {
         try {
-            Get-ScheduledTask -TaskPath $task -ErrorAction SilentlyContinue | Disable-ScheduledTask -ErrorAction SilentlyContinue | Out-Null
-            Write-Log "Disabled task: $task" -Level Info
+            # Split the full path into folder path and task name
+            $taskName = Split-Path -Path $task -Leaf
+            $taskPath = Split-Path -Path $task -Parent
+
+            # Ensure path ends with backslash as required by Get-ScheduledTask
+            if (-not $taskPath.EndsWith('\')) {
+                $taskPath += '\'
+            }
+
+            # Get and disable the task using both path and name
+            $scheduledTask = Get-ScheduledTask -TaskName $taskName -TaskPath $taskPath -ErrorAction SilentlyContinue
+            if ($scheduledTask) {
+                Disable-ScheduledTask -InputObject $scheduledTask -ErrorAction SilentlyContinue | Out-Null
+                Write-Log "Disabled task: $task" -Level Info
+            } else {
+                Write-Log "Task not found (may not exist on this system): $task" -Level Info
+            }
         } catch {
-            Write-Log "Could not disable task: $task" -Level Warning
+            Write-Log "Could not disable task: $task - $($_.Exception.Message)" -Level Warning
         }
     }
 
@@ -606,11 +621,24 @@ function Start-UpgradeAndDebloat {
 
             Start-Process -FilePath $installerPath -Wait
 
-            Write-Log "Upgrade process initiated. After upgrade completes, run this script again with -SkipUpgrade to debloat." -Level Success
+            Write-Log "=====================================" -Level Success
+            Write-Log "Windows 11 installer has been launched!" -Level Success
+            Write-Log "=====================================" -Level Success
+            Write-Log "" -Level Info
+            Write-Log "IMPORTANT: The upgrade process will continue through multiple reboots." -Level Warning
+            Write-Log "After Windows 11 installation is complete, run this script again:" -Level Warning
+            Write-Log "" -Level Info
+            Write-Log "    .\Upgrade-To-Windows11-Debloated.ps1 -SkipUpgrade" -Level Info
+            Write-Log "" -Level Info
+            Write-Log "This will remove bloatware and optimize your fresh Windows 11 installation." -Level Info
+            Write-Log "=====================================" -Level Info
+
+            # Exit here - don't run debloat operations until after upgrade completes
+            return
         }
     }
 
-    # Debloat operations
+    # Debloat operations (only runs if -SkipUpgrade was specified or no installer was launched)
     Write-Log "=====================================" -Level Info
     Write-Log "Starting debloat operations..." -Level Info
     Write-Log "=====================================" -Level Info
